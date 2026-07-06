@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AskAura — FAQ Assistant</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="sr-announcer" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
+<div id="app">
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <aside id="sidebar" aria-label="Navigation">
+
+    <!-- Logo -->
+    <div id="sidebar-logo">
+      <div class="logo-mark"><i class="ti ti-sparkles"></i></div>
+      <div class="logo-text">
+        <div class="logo-name">AskAura</div>
+        <div class="logo-tagline">Intelligent FAQ Assistant</div>
+      </div>
+    </div>
+
+    <!-- Pages Nav -->
+    <nav id="sidebar-nav" aria-label="Pages">
+      <div class="nav-group-label">Browse Topics</div>
+
+      <button class="nav-item active" data-page="chat" data-cat="">
+        <span class="nav-icon"><i class="ti ti-message-2"></i></span>
+        <span class="nav-label">Chat Assistant</span>
+      </button>
+
+      <div class="nav-divider"></div>
+      <div class="nav-group-label">FAQ Pages</div>
+
+      <button class="nav-item" data-page="page" data-cat="Account">
+        <span class="nav-icon"><i class="ti ti-user-circle"></i></span>
+        <span class="nav-label">Account</span>
+        <span class="nav-badge" id="badge-Account"></span>
+      </button>
+      <button class="nav-item" data-page="page" data-cat="Billing">
+        <span class="nav-icon"><i class="ti ti-credit-card"></i></span>
+        <span class="nav-label">Billing</span>
+        <span class="nav-badge" id="badge-Billing"></span>
+      </button>
+      <button class="nav-item" data-page="page" data-cat="Product">
+        <span class="nav-icon"><i class="ti ti-device-laptop"></i></span>
+        <span class="nav-label">Product</span>
+        <span class="nav-badge" id="badge-Product"></span>
+      </button>
+      <button class="nav-item" data-page="page" data-cat="Support">
+        <span class="nav-icon"><i class="ti ti-headset"></i></span>
+        <span class="nav-label">Support</span>
+        <span class="nav-badge" id="badge-Support"></span>
+      </button>
+      <button class="nav-item" data-page="page" data-cat="Privacy">
+        <span class="nav-icon"><i class="ti ti-shield-check"></i></span>
+        <span class="nav-label">Privacy</span>
+        <span class="nav-badge" id="badge-Privacy"></span>
+      </button>
+      <button class="nav-item" data-page="page" data-cat="Pricing">
+        <span class="nav-icon"><i class="ti ti-tag"></i></span>
+        <span class="nav-label">Pricing</span>
+        <span class="nav-badge" id="badge-Pricing"></span>
+      </button>
+
+      <div class="nav-divider"></div>
+      <div class="nav-group-label">Recent Questions</div>
+      <div id="history-list"></div>
+    </nav>
+
+    <!-- Footer -->
+    <div id="sidebar-footer">
+      <div class="nlp-pill">
+        <i class="ti ti-shield-check"></i>
+        <span>FAQ match ready</span>
+        <span class="nlp-dot"></span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════ MAIN AREA ══════════ -->
+  <div id="main">
+
+    <!-- Top Bar -->
+    <header id="topbar">
+      <button id="sidebar-toggle" class="topbar-btn" aria-label="Toggle sidebar">
+        <i class="ti ti-menu-2"></i>
+      </button>
+      <div id="topbar-breadcrumb">
+        <span id="topbar-title">Chat Assistant</span>
+      </div>
+      <div id="topbar-actions">
+        <button class="topbar-btn" id="btn-analytics" title="Analytics"><i class="ti ti-chart-bar"></i></button>
+        <button class="topbar-btn" id="btn-editor"    title="FAQ Editor"><i class="ti ti-edit"></i></button>
+        <button class="topbar-btn" id="btn-export"    title="Export Chat"><i class="ti ti-download"></i></button>
+        <button class="topbar-btn" id="btn-clear"     title="Clear Chat"><i class="ti ti-eraser"></i></button>
+      </div>
+    </header>
+
+    <!-- ── PAGE VIEW (FAQ category pages) ── -->
+    <div id="page-view" class="hidden">
+      <div id="page-header">
+        <div id="page-header-icon"><i class="ti ti-user-circle"></i></div>
+        <div>
+          <h2 id="page-title">Account</h2>
+          <p id="page-subtitle">Browse all Account FAQs</p>
+        </div>
+        <div class="page-header-actions">
+          <img id="page-header-art" src="assets/images/askaura-warm-library.png" alt="" aria-hidden="true" loading="lazy" />
+          <input id="page-search" type="text" placeholder="Search in this section…" aria-label="Search FAQs" />
+        </div>
+      </div>
+      <div id="page-faq-list"></div>
+    </div>
+
+    <!-- ── CHAT VIEW ── -->
+    <div id="chat-view">
+      <div id="messages" role="log" aria-label="Conversation" aria-live="off"></div>
+      <div id="process-panel" aria-live="polite"></div>
+      <div id="input-row">
+        <button id="voice-btn" class="input-action-btn" title="Voice input"><i class="ti ti-microphone"></i></button>
+        <input id="user-input" type="text" placeholder="Ask me anything… (Ctrl+K)" autocomplete="off" aria-label="Your question" />
+        <button id="send-btn" aria-label="Send"><i class="ti ti-send"></i></button>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- Mobile overlay backdrop -->
+<div id="sidebar-backdrop"></div>
+
+<!-- ══════════ MODALS ══════════ -->
+
+<!-- Analytics -->
+<div id="modal-analytics" class="modal-overlay" role="dialog" aria-modal="true" hidden>
+  <div class="modal-box modal-wide">
+    <div class="modal-header">
+      <h2><i class="ti ti-chart-bar"></i> Analytics Dashboard</h2>
+      <button class="modal-close" data-close="modal-analytics"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body" id="analytics-body"></div>
+  </div>
+</div>
+
+<!-- FAQ Editor -->
+<div id="modal-editor" class="modal-overlay" role="dialog" aria-modal="true" hidden>
+  <div class="modal-box modal-wide">
+    <div class="modal-header">
+      <h2><i class="ti ti-edit"></i> FAQ Editor</h2>
+      <button class="modal-close" data-close="modal-editor"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div id="editor-toolbar">
+        <button class="btn-primary" id="btn-add-faq"><i class="ti ti-plus"></i> Add FAQ</button>
+        <input id="editor-search" type="text" placeholder="Filter FAQs…" aria-label="Filter FAQs" />
+      </div>
+      <div id="editor-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit FAQ -->
+<div id="modal-faq-form" class="modal-overlay" role="dialog" aria-modal="true" hidden>
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="faq-form-title">Add FAQ</h2>
+      <button class="modal-close" data-close="modal-faq-form"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <label class="form-label">Question<input id="faq-form-q" type="text" class="form-input" placeholder="What is…?" /></label>
+      <label class="form-label">Answer<textarea id="faq-form-a" class="form-input form-textarea" placeholder="The answer is…"></textarea></label>
+      <label class="form-label">Tags (comma-separated)<input id="faq-form-tags" type="text" class="form-input" placeholder="login, password, access" /></label>
+      <label class="form-label">Category
+        <select id="faq-form-cat" class="form-input">
+          <option>Account</option><option>Billing</option><option>Product</option>
+          <option>Support</option><option>Privacy</option><option>Pricing</option>
+        </select>
+      </label>
+      <div class="form-actions">
+        <button class="btn-secondary" data-close="modal-faq-form">Cancel</button>
+        <button class="btn-primary" id="faq-form-save">Save FAQ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Export -->
+<div id="modal-export" class="modal-overlay" role="dialog" aria-modal="true" hidden>
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2><i class="ti ti-download"></i> Export Conversation</h2>
+      <button class="modal-close" data-close="modal-export"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc">Choose a format to download your conversation.</p>
+      <div class="export-options">
+        <button class="export-card" id="export-txt"><i class="ti ti-file-text"></i><span>Plain Text</span><small>.txt</small></button>
+        <button class="export-card" id="export-json"><i class="ti ti-braces"></i><span>JSON</span><small>.json</small></button>
+        <button class="export-card" id="export-md"><i class="ti ti-markdown"></i><span>Markdown</span><small>.md</small></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" aria-live="assertive" aria-atomic="true"></div>
+<script src="app.js"></script>
+</body>
+</html>
